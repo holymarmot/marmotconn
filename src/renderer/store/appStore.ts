@@ -322,13 +322,30 @@ export const useAppStore = create<AppStore>((set, get) => ({
     }
   },
 
-  // Silent refresh - no error toast, for polling. Never auto-stages — only reflects current git state.
+  // Silent refresh - no error toast, for polling. Auto-stages files that newly appeared.
   refreshStatusSilent: async () => {
-    const { activeRepo } = get()
+    const { activeRepo, gitStatus } = get()
     if (!activeRepo) return
     try {
       const status = await marmot().git.status({ repoPath: activeRepo.localPath })
-      set({ gitStatus: status, activeBranch: status.currentBranch })
+
+      // Auto-stage files that weren't in the previous unstaged list (newly appeared changes)
+      const prevUnstagedPaths = new Set([
+        ...(gitStatus?.unstaged.map((f) => f.path) ?? []),
+        ...(gitStatus?.untracked ?? []),
+      ])
+      const newPaths = [
+        ...status.unstaged.map((f) => f.path),
+        ...status.untracked,
+      ].filter((p) => !prevUnstagedPaths.has(p))
+
+      if (newPaths.length > 0) {
+        await marmot().git.stage({ repoPath: activeRepo.localPath, paths: newPaths })
+        const updated = await marmot().git.status({ repoPath: activeRepo.localPath })
+        set({ gitStatus: updated, activeBranch: updated.currentBranch })
+      } else {
+        set({ gitStatus: status, activeBranch: status.currentBranch })
+      }
     } catch {
       // silent
     }

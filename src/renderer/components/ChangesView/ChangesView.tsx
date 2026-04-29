@@ -118,21 +118,22 @@ export function ChangesView() {
           className="section-header"
           style={{ paddingTop: 10 }}
         >
-          <span className="section-title">
-            {t('changes.staged')}
-            {staged.length > 0 && (
-              <span style={{ marginLeft: 6, color: 'var(--color-accent)' }}>{staged.length}</span>
-            )}
-          </span>
-          {staged.length > 0 && (
-            <button
-              className="btn btn-ghost"
-              style={{ fontSize: '0.7rem', padding: '2px 6px' }}
-              onClick={unstageAll}
-            >
-              {t('changes.unstageAll')}
-            </button>
-          )}
+          <label style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: staged.length > 0 ? 'pointer' : 'default' }}>
+            <input
+              type="checkbox"
+              className="checkbox"
+              checked={staged.length > 0}
+              disabled={staged.length === 0}
+              onChange={() => unstageAll()}
+              onClick={(e) => e.stopPropagation()}
+            />
+            <span className="section-title">
+              {t('changes.staged')}
+              {staged.length > 0 && (
+                <span style={{ marginLeft: 6, color: 'var(--color-accent)' }}>{staged.length}</span>
+              )}
+            </span>
+          </label>
         </div>
 
         <div style={{ maxHeight: 180, overflow: 'auto' }}>
@@ -165,22 +166,23 @@ export function ChangesView() {
       {/* Unstaged files */}
       <div style={{ borderBottom: '1px solid var(--color-border)', flex: '0 0 auto' }}>
         <div className="section-header" style={{ paddingTop: 10 }}>
-          <span className="section-title">
-            {t('changes.changes')}
-            {allUnstaged.length > 0 && (
-              <span style={{ marginLeft: 6, color: 'var(--color-text-secondary)' }}>{allUnstaged.length}</span>
-            )}
-          </span>
+          <label style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: allUnstaged.length > 0 ? 'pointer' : 'default' }}>
+            <input
+              type="checkbox"
+              className="checkbox"
+              checked={false}
+              disabled={allUnstaged.length === 0}
+              onChange={() => stageAll()}
+              onClick={(e) => e.stopPropagation()}
+            />
+            <span className="section-title">
+              {t('changes.changes')}
+              {allUnstaged.length > 0 && (
+                <span style={{ marginLeft: 6, color: 'var(--color-text-secondary)' }}>{allUnstaged.length}</span>
+              )}
+            </span>
+          </label>
           <div style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
-            {allUnstaged.length > 0 && (
-              <button
-                className="btn btn-ghost"
-                style={{ fontSize: '0.7rem', padding: '2px 6px' }}
-                onClick={stageAll}
-              >
-                {t('changes.stageAll')}
-              </button>
-            )}
             {hasChanges && (
               <div ref={actionsDropdownRef} style={{ position: 'relative' }}>
                 <button

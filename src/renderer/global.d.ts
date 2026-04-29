@@ -11,6 +11,7 @@ import type {
 } from '../shared/types'
 
 interface MarmotAPI {
+  platform: string
   git: {
     clone: (p: { url: string; localPath: string; sshKeyPath?: string }) => Promise<void>
     status: (p: { repoPath: string }) => Promise<GitStatus>

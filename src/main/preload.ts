@@ -5,6 +5,7 @@ function invoke(channel: string, params?: unknown): Promise<unknown> {
 }
 
 contextBridge.exposeInMainWorld('marmot', {
+  platform: process.platform,
   git: {
     clone: (params: unknown) => invoke('git:clone', params),
     status: (params: unknown) => invoke('git:status', params),

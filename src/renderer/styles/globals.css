@@ -135,6 +135,10 @@ body {
   gap: 8px;
 }
 
+[data-platform="darwin"] .titlebar {
+  padding: 0 16px 0 80px; /* left padding reserves space for macOS traffic lights */
+}
+
 .titlebar * {
   -webkit-app-region: no-drag;
 }

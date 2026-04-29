@@ -289,8 +289,8 @@ export async function unstageAll(repoPath: string): Promise<void> {
 
 export async function discardAll(repoPath: string): Promise<void> {
   const sg = git(repoPath)
-  try { await sg.raw(['reset', 'HEAD']) } catch {}
-  try { await sg.checkout(['--', '.']) } catch {}
+  // reset --hard is atomic (resets index + working tree in one step, no intermediate unstaged state)
+  try { await sg.raw(['reset', '--hard', 'HEAD']) } catch {}
   try { await sg.raw(['clean', '-fd']) } catch {}
 }
 
